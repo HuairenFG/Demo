@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/轮播图2.css" />
+		<!--本例实现了轮播图功能，采用JS原生代码，与Demo1区别在于：本例直接采用了style:opacity属性实现照片更替，
+			
+		没有了照片滑动效果-->
+		
+		
+	</head>
+	<body>
+		<!--大盒子-->
+		<div>
+			<!--滚动的slider盒子-->
+			<div id="box" class="all" onmousemove="showarr()" onmouseout="hiddenarr()">
+				<!--最内部盒子：滚动盒子的主要部分-->
+				<div class="inner">
+					<!--下面是几张滚动图片-->
+					<ul>
+						<li><a href="#"><img src="../img/photo1.jpg" width="800px" height="500px" alt="图片1" /></a></li>
+						<li><a href="#"><img src="../img/photo2.jpg" width="800px" height="500px" alt="图片2" /></a></li>
+						<li><a href="#"><img src="../img/photo3.jpg" width="800px" height="500px" alt="图片3"/></a></li>
+						<li><a href="#"><img src="../img/photo4.jpg" width="800px" height="500px" alt="图片4"/></a></li>
+					</ul>
+					
+					<!--存放小圆点-->
+					<ol>
+						
+					</ol>
+				</div>
+				
+				<!--左右移动的箭头-->
+				<div id="arr" class="focusD">
+					<span id="left" onclick="addleft()"><</span>
+					<span id="right" onclick="addright()">></span>
+				</div>
+			</div>			
+		</div>
+	</body>
+	<script>
+		var index = 0;
+		var box = document.getElementById("box");
+		var inner = box.children[0];
+		var imgWidth = inner.offsetWidth;
+		var ulObj = inner.children[0];
+		var list = ulObj.children;
+		var olObj = inner.children[1];
+		var arr = document.getElementById("arr");
+
+			
+		//创建小按钮
+		for(var i=0;i<list.length;i++){
+			var liObjs =document.createElement("li")
+			olObj.appendChild(liObjs);
+			liObjs.innerHTML = (i + 1);
+			liObjs.setAttribute("index", i);
+			liObjs.onmouseover = function(){
+				for(var j=0;j<olObj.children.length;j++){
+					olObj.children[j].removeAttribute("class");
+				}
+				this.className = "current";
+				index =this.getAttribute("index");
+				animate(index);
+			};
+		}
+		olObj.children[0].className ="current";
+		
+
+		//自动定时循环
+		var timeId = setInterval("clickHandle()",5000);
+		
+		function clickHandle(){
+			addright();				
+		}
+		
+		//显示箭头
+		function showarr(){
+			arr.style.display = "block";
+			clearInterval(timeId);
+		}
+		
+		//隐藏箭头
+		function hiddenarr(){
+			arr.style.display = "none";
+			timeId = setInterval(clickHandle,5000);
+		}
+		
+		//点击右边按钮
+		function addright(){
+			if(index==(list.length-1)){
+				index = 0;
+				olObj.children[index].className="current";
+				olObj.children[list.length-1].className="";
+			}else{
+				index++;
+				
+				olObj.children[index].className="current";
+				olObj.children[index-1].className="";
+			}
+			animate(index);
+		}
+		
+		//点击左边按钮
+		function addleft(){
+			if (index==0){
+		        index=list.length-1;
+				olObj.children[index].className="current";
+				olObj.children[0].className="";
+		    }else{
+		    	index--;
+		    	olObj.children[index].className="current";
+		    	olObj.children[index+1].className="";
+		    }	
+		    animate(index);
+		}
+	  	
+	  	//移动函数	  	
+	  	function animate(index){
+	  		for(var k=0; k<list.length;k++){
+	  			list[k].style.opacity=0;
+	  		}
+	  		list[index].style.opacity=1;
+	  	}
+	</script>
+	
+</html>

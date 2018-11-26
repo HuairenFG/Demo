@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>轮播图Demo3</title>
+		<link rel="stylesheet" href="../css/轮播图3.css" />
+		<script src="../js/vue-2.4.0.js"></script>
+		<!--此代码实现了轮播图功能，采用vue框架，但是由于作者还没有学到直接利用组件，
+			
+		所以本例以掌握Vue框架的基础语法为目标，可能很多代码写的有些繁琐了-->
+		
+	</head>
+	<body>
+		<!--大盒子-->
+		<div id="app">
+
+			
+			<!--滚动的slider盒子-->
+			<div id="box" class="all" @mouseover="showarr" @mouseout="hiddenarr">
+				<!--最内部盒子：滚动盒子的主要部分-->
+				<div class="inner">
+					<!--下面是几张滚动图片-->
+					<ul>
+						<li v-for="item in list" :key="item.id" :class="item.st">
+							<img v-bind:src="item.add" width="800px" height="500px" v-bind:alt="item.name"/>
+						</li>
+					</ul>
+
+					<!--存放小圆点-->
+					<ol>
+						<li v-for="item in list" :key="item.id" :class="item.cn" @mouseover="change(item.id)">{{ item.id }}</li>
+					</ol>
+				</div>
+				
+				<!--左右移动的箭头-->
+				<div id="arr" class="focusD">
+					<span id="left" @click="addleft" ><</span>
+					<span id="right" @click="addright" >></span>
+				</div>
+			</div>			
+		</div>
+		
+		<script>
+			var vm = new Vue({
+				el: '#app',
+				data: {
+					index:0,
+					intervalId: null,
+					list: [
+						{id:1, add:'../img/photo1.jpg', name:'图片1', cn:'current', st:'newsh'},
+						{id:2, add:'../img/photo2.jpg', name:'图片2', cn:'', st:'newhi'},
+						{id:3, add:'../img/photo3.jpg', name:'图片3', cn:'', st:'newhi'},
+						{id:4, add:'../img/photo4.jpg', name:'图片4', cn:'', st:'newhi'}
+					],
+
+				},
+				methods:{
+					
+					
+					//显示箭头
+					showarr(){
+						arr.style.display = "block";
+						//alert(this.intervalId);
+						clearInterval(this.intervalId);
+						this.intervalId = null;
+						
+					},
+					
+					//隐藏箭头
+					hiddenarr(){
+						arr.style.display = "none";
+						this.lang();
+					},
+					
+					//点击右边按钮
+					addright(){
+						if(this.index==(this.list.length-1)){
+							
+							this.index = 0;
+							
+							this.list[0].cn="current";
+							this.list[0].st="newsh";
+							this.list[this.list.length-1].cn="";
+							this.list[this.list.length-1].st="newhi";
+							
+						}else{
+							this.index++;
+							this.list[this.index].cn="current";
+							this.list[this.index].st="newsh";
+							this.list[this.index-1].cn="";
+							this.list[this.index-1].st="newhi";
+						}
+					
+					},
+					
+					//点击左边按钮
+					addleft(){
+						if (this.index==0){
+					        this.index=this.list.length-1;
+							this.list[this.index].cn="current";
+							this.list[this.index].st="newsh";
+							this.list[0].cn="";
+							this.list[0].st="newhi";
+					    }else{
+					    	this.index--;
+					    	this.list[this.index].cn="current";
+					    	this.list[this.index].st="newsh";
+					    	this.list[this.index+1].cn="";
+					    	this.list[this.index+1].st="newhi";
+					    }
+					},
+					
+					//序号换图	  	
+				  	change(id){
+				  		if((id-1) != this.index){
+				  			this.list[id-1].cn="current";
+				  			this.list[id-1].st="newsh";
+				  			this.list[this.index].cn="";
+				  			this.list[this.index].st="newhi";
+				  			this.index = id-1;
+				  		}
+				  	},
+				  	
+				  	lang(){
+				  		if(this.intervalId !=null) return;
+				  		
+				  		this.intervalId = setInterval(() => {
+				  			this.addright();
+				  		},5000)
+				  	},
+				  	
+				},
+				
+			    //自动循环
+				beforeMount(){
+					this.lang();
+				},
+				
+			})
+		</script>
+	</body>
+</html>
